@@ -23,7 +23,7 @@ EASY_CONF_THRESH    = 0.80   # raise/lower if needed
 PREFER_LONGEST      = True   # choose 7-digit over 6-digit when both seen
 TEXTRACT            = boto3.client("textract")
 # ────────────────────────────────
-
+ 
 # pre-compiled regex: 6- or 7-digit, first digit 1-9
 DIGIT_RE = re.compile(rf"\b[1-9]\d{{{MIN_LEN-1},{MAX_LEN-1}}}\b")
 
