@@ -40,7 +40,7 @@ def find_nums(s: str):
 
 def seq_name(n: int, url: str) -> str:
     base = unquote(Path(urlparse(url).path).name) or "image"
-    return f"{n:04d}_{base}"
+    return f"{base}"
 
 def dl(url: str, n: int, roi_dir: Path, full_dir: Path):
     try:
