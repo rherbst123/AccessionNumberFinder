@@ -13,7 +13,7 @@ CSV rows are flushed after every image so progress is never lost.
 """
 from pathlib import Path
 from urllib.parse import urlparse, unquote
-import csv, re, sys, requests, cv2, numpy as np, easyocr, boto3
+import csv, re, sys, requests, cv2, numpy as np, easyocr, boto3, shutil
 from datetime import datetime
 
 # ─────────── Tunables ───────────
@@ -29,7 +29,9 @@ DIGIT_RE = re.compile(rf"\b[1-9]\d{{{MIN_LEN-1},{MAX_LEN-1}}}\b")
 
 def make_csv_path(input_file: Path) -> Path:
     date_str = datetime.now().strftime("%Y-%m-%d")
-    return Path(f"{input_file.stem}_{date_str}.csv")
+    output_dir = Path.home() / "Desktop" / "AccessionNumbers"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    return output_dir / f"{input_file.stem}_{date_str}.csv"
 
 
 def find_numbers(text: str) -> list[str]:
@@ -74,6 +76,7 @@ def ocr_easyocr_chunks(img: np.ndarray, reader) -> str | None:
 def ocr_textract(img_path: Path) -> str | None:
     try:
         bytes_ = img_path.read_bytes()
+        #Detect Document text. 
         resp = TEXTRACT.detect_document_text(Document={"Bytes": bytes_})
         text = " ".join(b["Text"] for b in resp.get("Blocks", [])
                         if b["BlockType"] == "WORD")
@@ -104,7 +107,10 @@ def main(url_file: Path, download_dir: Path):
     urls = [u.strip() for u in url_file.read_text().splitlines() if u.strip()]
     if not urls:
         sys.exit("URL file is empty.")
-
+        
+    # Delete the download directory if it exists
+    if download_dir.exists():
+        shutil.rmtree(download_dir)
     download_dir.mkdir(parents=True, exist_ok=True)
     csv_path = make_csv_path(url_file)
     header_needed = not csv_path.exists()
@@ -134,7 +140,7 @@ def main(url_file: Path, download_dir: Path):
 # ───────────── CLI ─────────────
 if __name__ == "__main__":
     if not (2 <= len(sys.argv) <= 3):
-        print("Usage: python accession_scraper.py urls.txt [download_dir]")
+        print("Usage: OCR_AccessionNumber_AWS_Textract.py urls.txt [download_dir]")
         sys.exit(1)
 
     url_list = Path(sys.argv[1])
