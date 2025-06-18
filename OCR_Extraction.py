@@ -8,8 +8,8 @@ from datetime import datetime
 MIN_LEN, MAX_LEN = 6, 7
 TARGET_H = 2250
 ROI_X_MAX, ROI_Y_MIN, ROI_Y_MAX = 380, 1900, 2250
-MAX_TRIES = 3
-THRESHOLDS = [0.80, 0.65, 0.50]
+MAX_TRIES = 5
+THRESHOLDS = [0.80, 0.70, 0.65, 0.55, 0.45]
 SAT_STEP = 0.10
 DIGIT_RE = re.compile(rf"\b[1-9]\d{{{MIN_LEN-1},{MAX_LEN-1}}}\b")
 

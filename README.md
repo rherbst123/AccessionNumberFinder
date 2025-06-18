@@ -37,7 +37,7 @@ The tool downloads images from URLs provided in a text file, processes them to f
 
 1. Clone this repository:
    ```
-   git clone https://github.com/yourusername/AccessionNumberFinder.git
+   git clone https://github.com/rherbst123/AccessionNumberFinder.git
    cd AccessionNumberFinder
    ```
 
@@ -51,11 +51,12 @@ The tool downloads images from URLs provided in a text file, processes them to f
    aws configure
    ```
 
-## Usage
+
+## Usage for OCR only system.
 
 Basic usage:
 ```
-python OCR_AccessionNumber_AWS_Textract.py urls.txt [download_dir]
+python OCR_Extraction.py urls.txt [download_dir]
 ```
 
 Where:
@@ -64,7 +65,25 @@ Where:
 
 Example:
 ```
-python OCR_AccessionNumber_AWS_Textract.py specimen_urls.txt herbarium_images
+python OCR_Extraction.py specimen_urls.txt herbarium_images
+```
+
+
+
+## Usage for AWS system.
+
+Basic usage:
+```
+python AWS_Extraction.py urls.txt [download_dir]
+```
+
+Where:
+- `urls.txt` is a text file containing one image URL per line
+- `download_dir` (optional) is the directory where images will be saved (defaults to "downloaded_images")
+
+Example:
+```
+python AWS_Extraction.py specimen_urls.txt herbarium_images
 ```
 
 ## Output
@@ -86,23 +105,3 @@ MAX_LEN = 7             # Maximum length of accession numbers
 EASY_CONF_THRESH = 0.80 # Confidence threshold for EasyOCR
 PREFER_LONGEST = True   # Choose 7-digit over 6-digit when both found
 ```
-
-## How It Works
-
-1. The script reads URLs from the input file
-2. For each URL:
-   - Downloads the image
-   - Splits the image into a 3×3 grid
-   - Runs EasyOCR on each tile with confidence filtering
-   - If no match is found, falls back to AWS Textract
-   - Extracts numbers matching the pattern (6-7 digits, no leading zeros)
-   - Writes results to CSV
-
-## License
-
-[Add your license information here]
-
-## Acknowledgments
-
-- EasyOCR for providing the initial OCR capabilities
-- AWS Textract for advanced text recognition
